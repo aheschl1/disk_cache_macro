@@ -11,7 +11,7 @@ use tokio;
 /// `cache_async` is a procedural macro that caches the results of asynchronous functions to a specified directory.
 /// 
 /// Return type of the function must implement both `Serialize` and `Deserialize` from the `serde` crate in order to 
-/// be cached and retrieved correctly.
+/// be cached and retrieved correctly, or, if the return type is a `Result<T, E>`, then `T` must implement `Serialize`.
 /// 
 /// It checks if a cache file exists and whether the cache is still valid based on the provided `invalidate_rate`. 
 /// If the cache is valid, the cached result is returned. Otherwise, the function is executed, and the result is 
