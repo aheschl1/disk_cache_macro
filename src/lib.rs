@@ -37,6 +37,7 @@ pub fn cache_async(args: TokenStream, item: TokenStream) -> TokenStream {
     let func_body = &input.block;
     let func_args = &input.sig.inputs;
     let func_output = &input.sig.output;
+
     let func_type = match func_output {
         syn::ReturnType::Type(_, t) => t,
         _ => panic!("Function must have a return type"),
@@ -90,10 +91,13 @@ pub fn cache_async(args: TokenStream, item: TokenStream) -> TokenStream {
             },
             _ => (),
         }
-    }        
+    }
     let cache_path: String = cache_path.to_str().expect("Invalid cache path").to_string();
+    // figure out the header - depends on pub
+    let func_vis = &input.vis;
+
     let output = quote! {
-        async fn #func_name(#func_args) -> Result<#func_type, tokio::io::Error> #where_clause {
+        #func_vis async fn #func_name(#func_args) -> Result<#func_type, tokio::io::Error> #where_clause {
             // now we have the cache path. put the data.json at the end
             let mut cache_path: String = format!("{}/data.json", format!(#cache_path).to_string()).to_string();
             let path: std::path::PathBuf = std::path::PathBuf::from(&cache_path);
