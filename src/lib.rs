@@ -80,7 +80,7 @@ pub fn cache_async(args: TokenStream, item: TokenStream) -> TokenStream {
         match arg {
             NestedMeta::Meta(Meta::NameValue(nv)) if nv.path.is_ident("cache_root") => {
                 if let Lit::Str(lit_str) = &nv.lit {
-                    cache_path = PathBuf::from(lit_str.value());
+                    cache_path = PathBuf::from(expand_tilde(lit_str.value().as_str()));
                 }
             },
             NestedMeta::Meta(Meta::NameValue(nv)) if nv.path.is_ident("invalidate_rate") => {
