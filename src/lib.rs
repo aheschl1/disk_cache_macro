@@ -13,10 +13,8 @@ use tokio;
 /// Return type of the function must implement both `Serialize` and `Deserialize` from the `serde` crate in order to 
 /// be cached and retrieved correctly, or, if the return type is a `Result<T, E>`, then `T` must implement `Serialize`.
 /// 
-/// It checks if a cache file exists and whether the cache is still valid based on the provided `invalidate_rate`. 
-/// If the cache is valid, the cached result is returned. Otherwise, the function is executed, and the result is 
-/// saved to the cache for future use. This macro is especially useful for functions that perform expensive or 
-/// time-consuming operations and can benefit from caching the results to improve performance.
+/// If a cache file exists and is still valid, based on the provided `invalidate_rate`, returns cached result. 
+/// Otherwise, the function is executed, and the result is saved to the cache for future use. 
 ///
 /// # Arguments
 /// The macro accepts the following attributes:
@@ -40,7 +38,7 @@ pub fn cache_async(args: TokenStream, item: TokenStream) -> TokenStream {
 
     let func_type = match func_output {
         syn::ReturnType::Type(_, t) => t,
-        _ => panic!("Function must have a return type"),
+        _ => panic!("Expected a return type"),
     };
     let is_result = is_result_type(func_output).is_some();
     // here, we want to check if the return type is a Result type. Only then we can use the ? operator
